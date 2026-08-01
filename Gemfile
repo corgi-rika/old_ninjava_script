@@ -4,7 +4,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby "3.2.0"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 7.0.0"
+gem "rails", "~> 7.2.3", ">= 7.2.3.2"
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem "sprockets-rails"
@@ -13,7 +13,7 @@ gem "sprockets-rails"
 gem "mysql2", "~> 0.5"
 
 # Use the Puma web server [https://github.com/puma/puma]
-gem "puma", "~> 5.0"
+gem "puma", "~> 7.2", ">= 7.2.1"
 
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 gem "importmap-rails"
@@ -67,8 +67,7 @@ end
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
-  gem "selenium-webdriver"
-  gem "webdrivers"
+  gem "selenium-webdriver", ">= 4.14.0"
 end
 
 gem 'pry-rails'
@@ -82,3 +81,6 @@ end
 gem 'active_hash'
 
 gem 'kaminari'
+
+# Rails 7.0 は minitest 6 と非互換のため 5 系に固定
+gem 'minitest', '~> 5.25'

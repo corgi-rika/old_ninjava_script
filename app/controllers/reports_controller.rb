@@ -2,7 +2,7 @@ class ReportsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_user
   # `show`, `edit`, `update`, `destroy` アクションの前に特定の日報をセット
-  before_action :set_report, only: [:show, :edit, :update, :destroy, :edit]
+  before_action :set_report, only: [:show, :edit, :update, :destroy]
 
   def index
     if @user.mentee.present?

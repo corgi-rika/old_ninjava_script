@@ -16,7 +16,7 @@ class User < ApplicationRecord
   has_many :reports, dependent: :destroy
 
   # roleのバリデーション
-  validates :role, presence: true
+  validates :role, presence: true, inclusion: { in: Role.all.map(&:id) } # 不正なroleの値（0:学習者, 1:メンター以外）を拒否
   validates :nickname, presence: true
   validates :email, presence: true
 

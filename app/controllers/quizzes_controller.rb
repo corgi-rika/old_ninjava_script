@@ -1,5 +1,6 @@
 class QuizzesController < ApplicationController
   before_action :set_user
+  before_action :authorize_user # アクセス制御を追加。これでユーザーは他のユーザーのクイズにアクセスすることはできない
   before_action :set_word, only: [:show, :index, :finish]
   before_action :set_quiz, only: [:show, :finish] # finishアクションに対しても@quizを設定
 
@@ -11,7 +12,7 @@ class QuizzesController < ApplicationController
   end
 
   def index
-    Quiz.delete_all
+    Quiz.where(word: @user.words).delete_all # 自分の単語に紐づくクイズのみ削除（他ユーザーのクイズを消さない）
 
     session[:quiz_count] ||= 0
     session[:correct_count] ||= 0
@@ -60,13 +61,14 @@ class QuizzesController < ApplicationController
 
   def show
     @quiz = Quiz.find_by(id: params[:id])
-    @selected_word = params[:answer]
-    @correct_word = @quiz.correct_answer
 
     if @quiz.nil?
       flash[:alert] = 'クイズが見つかりませんでした。'
       redirect_to user_word_quizzes_path(@user, @word) and return
     end
+
+    @selected_word = params[:answer]
+    @correct_word = @quiz.correct_answer
 
     # 正解かどうかを判定し、正解数を増やす
     Rails.logger.info "Selected: #{@selected_word}, Correct: #{@correct_word}, Already Counted: #{session[:already_counted]}"
@@ -95,8 +97,8 @@ class QuizzesController < ApplicationController
 
   # クイズの終了処理
   def finish
-    # 特定の単語に関連するクイズをすべて削除
-    if Quiz.delete_all
+    # 自分の単語に関連するクイズをすべて削除（他ユーザーのクイズを消さない）
+    if Quiz.where(word: @user.words).delete_all
       Rails.logger.info "すべてのクイズが削除されました."
     else
       Rails.logger.error "クイズの削除に失敗しました."
@@ -121,6 +123,12 @@ class QuizzesController < ApplicationController
 
   def set_quiz
     @quiz = Quiz.find(params[:id])
+  end
+
+  def authorize_user
+    unless @user == current_user || @user == current_user.mentee || @user == current_user.mentor
+      redirect_to root_path
+    end
   end
 
 end

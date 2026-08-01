@@ -2,7 +2,6 @@
 
 one:
   word: one
-  question: MyString
   correct_answer: MyString
   option1: MyString
   option2: MyString
@@ -11,7 +10,6 @@ one:
 
 two:
   word: two
-  question: MyString
   correct_answer: MyString
   option1: MyString
   option2: MyString
